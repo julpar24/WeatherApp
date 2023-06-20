@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  WeatherApp
+
+  Created by Juliana Pardal on 15/06/2023.
+  
+*/
+
+HOURLY_FORECAST = "Hourly Forecast";
+WEEKLY_FORECAST = "Weekly Forecast";

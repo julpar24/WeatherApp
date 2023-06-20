@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "bc268c28fb170f494de9e9927c371b8342979ece",
+        "version" : "5.7.1"
+      }
+    },
+    {
+      "identity" : "sketchkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dogo/SketchKit.git",
+      "state" : {
+        "revision" : "edbe488e7272aefc52d3f878a71f6e61e4bda6d1",
+        "version" : "2.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}
