@@ -65,16 +65,15 @@ final class DetailCell: UICollectionViewCell {
         layer.borderWidth = 1.0
     }
     
-    func configureCell(data: CellForecast, iconData: Data) {
+    func configureCell(data: CellForecast, iconData: Data, isWeekly: Bool) {
         title.text = data.title
         icon.image = UIImage(data: iconData)
-        temp.text = data.maxTemp
-        guard let minTempText = data.minTemp else {
-            minTemp.isHidden = true
-            return
+        if isWeekly {
+            temp.font = .systemFont(ofSize: 13, weight: .regular)
         }
-        minTemp.isHidden = false
-        minTemp.text = minTempText
+        temp.text = isWeekly ? "Max: \(data.maxTemp)°" : "\(data.maxTemp)°"
+        minTemp.isHidden = !isWeekly
+        minTemp.text = "Min: \(data.minTemp)°"
     }
 }
 
@@ -93,6 +92,11 @@ extension DetailCell: ViewCodable {
             view.leadingAnchor(equalTo: leadingAnchor)
             view.trailingAnchor(equalTo: trailingAnchor)
             view.bottomAnchor(equalTo: bottomAnchor, constant: -8)
+        }
+        
+        icon.layout.applyConstraint { (view) in
+            view.widthAnchor(equalToConstant: 45)
+            view.heightAnchor(equalToConstant: 55)
         }
     }
     

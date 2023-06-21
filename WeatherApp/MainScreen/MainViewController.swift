@@ -10,6 +10,7 @@ import UIKit
 protocol MainViewControllerProtocol {
     func hideLoadingView()
     func setData(weather: CurrentWeather?)
+    func reloadData()
 }
 
 final class MainViewController: UIViewController, HasCustomView {
@@ -42,5 +43,9 @@ extension MainViewController: MainViewControllerProtocol {
     
     func setData(weather: CurrentWeather?) {
         customView.setData(weather: weather)
+    }
+    
+    func reloadData() {
+        customView.reloadData()
     }
 }

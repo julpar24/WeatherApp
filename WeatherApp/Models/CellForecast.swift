@@ -10,6 +10,7 @@ import Foundation
 struct CellForecast {
     let title: String
     let icon: String
-    let maxTemp: String
-    let minTemp: String?
+    let maxTemp: Int
+    let minTemp: Int
+    let order: Int?
 }

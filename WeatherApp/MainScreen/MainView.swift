@@ -11,11 +11,13 @@ protocol MainViewDelegate {
     var forecastData: [CellForecast] { get }
     var tabs: [String] { get }
     var icons: [Data?] { get }
-    func setWeekly(isWeekly: Bool)
+    var weekly: Bool { get }
+    func reloadData(isWeekly: Bool)
 }
 
 protocol MainViewProtocol {
     func setData(weather: CurrentWeather?)
+    func reloadData()
 }
 
 final class MainView: UIView {
@@ -177,7 +179,7 @@ extension MainView: ViewCodable {
         }
         
         hourlyWeeklyCollectionView.layout.applyConstraint { (view) in
-            view.topAnchor(equalTo: completeView.bottomAnchor, constant: 230)
+            view.topAnchor(equalTo: completeView.bottomAnchor, constant: 250)
             view.widthAnchor(equalTo: widthAnchor)
             view.heightAnchor(equalTo: heightAnchor, multiplier: 0.06)
         }
@@ -209,6 +211,15 @@ extension MainView {
                 
         layer.insertSublayer(gradientLayer, at: 0)
     }
+    
+    func loadData(weatherData: CurrentWeather) {
+        guard let dataW = weatherData.weather, dataW.count > 0 else { return }
+        city.text = weatherData.name
+        temperature.text = String(Int(weatherData.main?.temp?.rounded() ?? 0)) + "°"
+        weather.text = dataW[0].main
+        minTemp.text = "Min: \(Int(weatherData.main?.tempMin ?? 0))°"
+        maxTemp.text = "Max: \(Int(weatherData.main?.tempMax ?? 0))°"
+    }
 }
 
 //MARK: - MainViewProtocol Extension
@@ -220,13 +231,8 @@ extension MainView: MainViewProtocol {
         loadData(weatherData: weather)
     }
     
-    func loadData(weatherData: CurrentWeather) {
-        guard let dataW = weatherData.weather, dataW.count > 0 else { return }
-        city.text = weatherData.name
-        temperature.text = String(Int(weatherData.main?.temp?.rounded() ?? 0)) + "°"
-        weather.text = dataW[0].main
-        minTemp.text = "Mín: \(Int(weatherData.main?.tempMin ?? 0))°"
-        maxTemp.text = "Máx: \(Int(weatherData.main?.tempMax ?? 0))°"
+    func reloadData() {
+        detailsCollectionView.reloadData()
     }
 }
 
@@ -261,7 +267,8 @@ extension MainView: UICollectionViewDataSource {
             cellCollection.applyShadow(cornerRadius: 8)
             cellCollection.isUserInteractionEnabled = false
             cellCollection.configureCell(data: delegate.forecastData[indexPath.row],
-                                         iconData: delegate.icons[indexPath.row] ?? Data())
+                                         iconData: delegate.icons[indexPath.row] ?? Data(),
+                                         isWeekly: delegate.weekly)
             return cell
         }
     }
@@ -274,7 +281,7 @@ extension MainView: UICollectionViewDelegate {
             guard let cell = collectionView.cellForItem(at: indexPath) as? HourlyWeeklyCell else { return }
             cell.selectItem()
             if indexPath.row == 0 {
-                delegate?.setWeekly(isWeekly: false)
+                delegate?.reloadData(isWeekly: false)
                 detailsCollectionView.reloadData()
             } else {
                 if firstTime {
@@ -283,7 +290,7 @@ extension MainView: UICollectionViewDelegate {
                     guard let cell = collectionView.cellForItem(at: index) as? HourlyWeeklyCell else { return }
                     cell.deselectItem()
                 }
-                delegate?.setWeekly(isWeekly: true)
+                delegate?.reloadData(isWeekly: true)
                 detailsCollectionView.reloadData()
             }
         }
@@ -307,6 +314,6 @@ extension MainView: UICollectionViewDelegateFlowLayout {
         if collectionView == hourlyWeeklyCollectionView {
             return CGSize(width: collectionView.frame.size.width / 2, height: 0.06 * height)
         }
-        return CGSize(width: 0.15 * width, height: 0.17 * height)
+        return CGSize(width: 0.15 * width, height: 0.14 * height)
     }
 }
